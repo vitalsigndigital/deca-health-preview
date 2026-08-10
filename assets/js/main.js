@@ -166,14 +166,32 @@
         box.scrollIntoView({ behavior: 'smooth', block: 'center' });
       };
 
+      // Static hosts (GitHub Pages preview, file://) cannot execute the PHP mail script.
+      var isStaticPreview = /github\.io$/i.test(location.hostname) || location.protocol === 'file:';
+      var PREVIEW_MSG = 'This is a preview link, which can’t run the mail script — the form will deliver '
+        + 'straight to the clinic as soon as the site is live on its own domain.';
+
       fetch(form.getAttribute('action') || 'send.php', {
         method: 'POST',
         body: new FormData(form),
         headers: { 'Accept': 'application/json' }
       })
-        .then(function (r) { return r.json().catch(function () { return { ok: r.ok }; }); })
+        .then(function (r) {
+          return r.text().then(function (body) {
+            var data = null;
+            try { data = JSON.parse(body); } catch (e) { /* not JSON */ }
+            // No JSON back means the mail script never ran — never report success.
+            if (!data) {
+              var noBackend = isStaticPreview || r.status === 404 || r.status === 405 || r.status === 501;
+              return { ok: false, error: noBackend ? PREVIEW_MSG : null };
+            }
+            return data;
+          });
+        })
         .then(function (d) { if (d && d.ok) { showSuccess(); } else { showError(d && d.error); } })
-        .catch(function () { showError('We could not reach the server. Please call 905-674-6477 or email info@decahealthandwellness.com.'); });
+        .catch(function () {
+          showError(isStaticPreview ? PREVIEW_MSG : 'We could not reach the server.');
+        });
     });
     // clear error on input
     form.querySelectorAll('input, select, textarea').forEach(function (input) {
