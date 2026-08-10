@@ -838,3 +838,8 @@ body.nav-open { overflow: hidden; }
 /* Map call-to-action row */
 .map-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:22px}
 .map-actions .btn svg{width:16px;height:16px;margin-left:6px}
+
+/* Contact form error state */
+.form-error{margin-top:1rem;padding:.9rem 1.1rem;border-radius:var(--r-md);
+  background:#fdf1ec;border:1px solid #f0cdbd;color:#9a4a29;font-size:.95rem;line-height:1.55}
+.form-error a{color:#123a57;font-weight:700;text-decoration:underline}

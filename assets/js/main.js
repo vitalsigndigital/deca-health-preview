@@ -124,9 +124,10 @@
       if (!valid) return;
 
       var btn = form.querySelector('[type="submit"]');
+      var btnHtml = btn ? btn.innerHTML : '';
       if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
-      // Placeholder submit — wire to real booking/endpoint here.
-      setTimeout(function () {
+
+      var showSuccess = function () {
         if (window.decaTrack) { window.decaTrack('generate_lead', { form_name: 'appointment_request' }); }
         var card = form.closest('.form-card') || document;
         var success = card.querySelector('.form-success');
@@ -136,7 +137,43 @@
           success.classList.add('show');
           success.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
-      }, 900);
+      };
+      var showError = function (msg) {
+        if (btn) { btn.disabled = false; btn.innerHTML = btnHtml; }
+        var box = form.querySelector('.form-error');
+        if (!box) {
+          box = document.createElement('p');
+          box.className = 'form-error';
+          form.appendChild(box);
+        }
+        box.textContent = (msg || 'Sorry — something went wrong.') + ' ';
+        var mail = document.createElement('a');
+        var g = function (n) { var el = form.querySelector('[name="' + n + '"]'); return el ? el.value.trim() : ''; };
+        mail.href = 'mailto:decahealthgroup@gmail.com'
+          + '?subject=' + encodeURIComponent('Appointment request — ' + g('fname') + ' ' + g('lname'))
+          + '&body=' + encodeURIComponent([
+              'Name: ' + g('fname') + ' ' + g('lname'),
+              'Email: ' + g('email'),
+              'Phone: ' + g('phone'),
+              'Service: ' + g('service'),
+              '',
+              'Message:',
+              g('message')
+            ].join('\n'));
+        mail.textContent = 'Send it by email instead';
+        box.appendChild(mail);
+        box.appendChild(document.createTextNode(' or call 905-674-6477.'));
+        box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      };
+
+      fetch(form.getAttribute('action') || 'send.php', {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      })
+        .then(function (r) { return r.json().catch(function () { return { ok: r.ok }; }); })
+        .then(function (d) { if (d && d.ok) { showSuccess(); } else { showError(d && d.error); } })
+        .catch(function () { showError('We could not reach the server. Please call 905-674-6477 or email decahealthgroup@gmail.com.'); });
     });
     // clear error on input
     form.querySelectorAll('input, select, textarea').forEach(function (input) {
