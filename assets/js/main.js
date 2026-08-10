@@ -149,7 +149,7 @@
         box.textContent = (msg || 'Sorry — something went wrong.') + ' ';
         var mail = document.createElement('a');
         var g = function (n) { var el = form.querySelector('[name="' + n + '"]'); return el ? el.value.trim() : ''; };
-        mail.href = 'mailto:decahealthgroup@gmail.com'
+        mail.href = 'mailto:info@decahealthandwellness.com'
           + '?subject=' + encodeURIComponent('Appointment request — ' + g('fname') + ' ' + g('lname'))
           + '&body=' + encodeURIComponent([
               'Name: ' + g('fname') + ' ' + g('lname'),
@@ -173,7 +173,7 @@
       })
         .then(function (r) { return r.json().catch(function () { return { ok: r.ok }; }); })
         .then(function (d) { if (d && d.ok) { showSuccess(); } else { showError(d && d.error); } })
-        .catch(function () { showError('We could not reach the server. Please call 905-674-6477 or email decahealthgroup@gmail.com.'); });
+        .catch(function () { showError('We could not reach the server. Please call 905-674-6477 or email info@decahealthandwellness.com.'); });
     });
     // clear error on input
     form.querySelectorAll('input, select, textarea').forEach(function (input) {

@@ -9,7 +9,7 @@ declare(strict_types=1);
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
 
-$TO        = 'decahealthgroup@gmail.com';
+$TO        = 'info@decahealthandwellness.com';
 // Must be an address on your own domain so it passes SPF/DKIM and is not spam-filtered.
 $FROM      = 'noreply@decahealthandwellness.com';
 $FROM_NAME = 'DECA Website';
