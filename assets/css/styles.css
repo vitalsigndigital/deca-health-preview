@@ -821,3 +821,20 @@ body.nav-open { overflow: hidden; }
 @media (prefers-reduced-motion: reduce) {
   .mcta-book, .mcta-call, .nav-book-mobile { transition: none; }
 }
+
+/* ============ OFFICIAL LOGO LOCKUPS (2026 update) ============ */
+.brand-logo{height:56px;width:auto;display:block}
+.site-header .brand{display:flex;align-items:center;gap:0}
+.f-logo{height:56px;width:auto;display:block;margin-bottom:14px}
+@media (max-width:1040px){ .brand-logo{height:46px} }
+@media (max-width:600px){ .brand-logo{height:38px} .f-logo{height:42px} }
+@media (max-width:380px){ .brand-logo{height:32px} }
+
+/* Keep utility-bar items (phone, hours, address) on a single line */
+.utilbar .util-item{white-space:nowrap}
+.utilbar .util-right{flex-shrink:0}
+.utilbar .container{gap:18px}
+
+/* Map call-to-action row */
+.map-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+.map-actions .btn svg{width:16px;height:16px;margin-left:6px}

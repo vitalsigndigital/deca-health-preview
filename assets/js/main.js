@@ -127,6 +127,7 @@
       if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
       // Placeholder submit — wire to real booking/endpoint here.
       setTimeout(function () {
+        if (window.decaTrack) { window.decaTrack('generate_lead', { form_name: 'appointment_request' }); }
         var card = form.closest('.form-card') || document;
         var success = card.querySelector('.form-success');
         var fields = card.querySelector('.form-fields');
@@ -145,4 +146,34 @@
       });
     });
   }
+})();
+
+/* ============ CONVERSION TRACKING (GA4 + GTM dataLayer) ============ */
+(function () {
+  window.dataLayer = window.dataLayer || [];
+  function track(name, params) {
+    params = params || {};
+    try { window.dataLayer.push(Object.assign({ event: name }, params)); } catch (e) {}
+    if (typeof window.gtag === 'function') { window.gtag('event', name, params); }
+  }
+  window.decaTrack = track;
+
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a');
+    if (!a) return;
+    var href = a.getAttribute('href') || '';
+    var label = (a.textContent || '').trim().slice(0, 60);
+
+    if (href.indexOf('tel:') === 0) {
+      track('click_to_call', { phone_number: href.replace('tel:', ''), link_text: label });
+    } else if (href.indexOf('mailto:') === 0) {
+      track('email_click', { link_text: label });
+    } else if (href.indexOf('juvonno.com') > -1) {
+      track('book_online_click', { link_text: label, link_url: href });
+    } else if (a.dataset && a.dataset.track === 'gbp') {
+      track('google_profile_click', {});
+    } else if (a.dataset && a.dataset.track === 'directions') {
+      track('directions_click', {});
+    }
+  }, true);
 })();
